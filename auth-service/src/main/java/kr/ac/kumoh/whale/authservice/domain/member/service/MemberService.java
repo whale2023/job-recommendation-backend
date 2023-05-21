@@ -1,10 +1,12 @@
 package kr.ac.kumoh.whale.authservice.domain.member.service;
 
 import kr.ac.kumoh.whale.authservice.domain.member.dto.MemberDto;
+import kr.ac.kumoh.whale.authservice.domain.member.dto.response.MemberInfoDto;
 import kr.ac.kumoh.whale.authservice.domain.member.entity.MemberEntity;
 import kr.ac.kumoh.whale.authservice.domain.member.repository.MemberRepository;
 import kr.ac.kumoh.whale.authservice.global.error.exception.EntityNotFoundException;
 import kr.ac.kumoh.whale.authservice.global.error.exception.InvalidValueException;
+import kr.ac.kumoh.whale.authservice.global.security.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.User;
@@ -24,6 +26,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberService implements UserDetailsService {
     private final MemberRepository memberRepository;
+    private final TokenProvider tokenProvider;
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     public MemberDto getUserByEmail(String userEmail) {
         MemberEntity member = memberRepository.findByEmail(userEmail)
@@ -69,5 +72,17 @@ public class MemberService implements UserDetailsService {
                 .orElseThrow(()->new InvalidValueException("entity -> dto 변환 에러"));
 
         return response;
+    }
+
+    public MemberInfoDto getMyInfo(String token) {
+        String userEmail = tokenProvider.validateJwtAndGetUserEmail(token);
+
+        MemberEntity member = memberRepository.findByEmail(userEmail)
+                .orElseThrow(()-> new EntityNotFoundException("사용자를 찾을 수 없습니다"));
+
+        MemberInfoDto dto = Optional.ofNullable(member).map(MemberInfoDto::new)
+                .orElseThrow(()-> new InvalidValueException("dto 변환 실패"));
+
+        return dto;
     }
 }
