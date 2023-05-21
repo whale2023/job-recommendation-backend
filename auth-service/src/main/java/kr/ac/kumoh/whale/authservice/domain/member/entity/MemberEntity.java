@@ -1,5 +1,6 @@
 package kr.ac.kumoh.whale.authservice.domain.member.entity;
 
+import kr.ac.kumoh.whale.authservice.domain.resume.entity.ResumeEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -42,6 +43,9 @@ public class MemberEntity {
     @Column(nullable = false)
     private Disability disabilityType;
 
+    @OneToOne(mappedBy = "member")
+    private ResumeEntity resume;
+
     @Builder
     public MemberEntity(@NonNull String username, @NonNull int age, @NonNull String email, @NonNull String encryptedPwd, @NonNull String addressInfo, @NonNull String addressDetails, @NonNull Disability disabilityType) {
         this.username = username;
@@ -51,5 +55,9 @@ public class MemberEntity {
         this.addressInfo = addressInfo;
         this.addressDetails = addressDetails;
         this.disabilityType = disabilityType;
+    }
+
+    public void writeResume(ResumeEntity resume){
+        resume.setMember(this);
     }
 }
