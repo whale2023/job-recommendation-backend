@@ -1,9 +1,12 @@
 package kr.ac.kumoh.whale.authservice.domain.member.entity;
 
+import kr.ac.kumoh.whale.authservice.domain.jobs.entity.JobAnnouncement;
 import kr.ac.kumoh.whale.authservice.domain.resume.entity.ResumeEntity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Entity
@@ -46,6 +49,14 @@ public class MemberEntity {
     @OneToOne(mappedBy = "member")
     private ResumeEntity resume;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "member_wishlist",
+            joinColumns = @JoinColumn(name = "member_id"),
+            inverseJoinColumns = @JoinColumn(name = "job_announcement_id")
+    )
+    private Set<JobAnnouncement> wishlist = new HashSet<>();
+
     @Builder
     public MemberEntity(@NonNull String username, @NonNull int age, @NonNull String email, @NonNull String encryptedPwd, @NonNull String addressInfo, @NonNull String addressDetails, @NonNull Disability disabilityType) {
         this.username = username;
@@ -59,5 +70,15 @@ public class MemberEntity {
 
     public void writeResume(ResumeEntity resume){
         resume.setMember(this);
+    }
+
+    public void addToWishlist(JobAnnouncement jobAnnouncement) {
+        wishlist.add(jobAnnouncement);
+        jobAnnouncement.getMembers().add(this);
+    }
+
+    public void removeFromWishlist(JobAnnouncement jobAnnouncement) {
+        wishlist.remove(jobAnnouncement);
+        jobAnnouncement.getMembers().remove(this);
     }
 }
