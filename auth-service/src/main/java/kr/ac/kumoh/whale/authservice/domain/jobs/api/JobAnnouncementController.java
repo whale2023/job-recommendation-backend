@@ -42,10 +42,10 @@ public class JobAnnouncementController {
     }
 
     @GetMapping("/wish")
-    public ResponseEntity<?> getWishList(@RequestHeader("Authorization")String token, @RequestParam Long jobAnnoucemnetId) {
+    public ResponseEntity<?> getWishList(@RequestHeader("Authorization")String token, Pageable pageable) {
         String accessToken = token.substring(7);
-        jobAnnouncementService.removeFromWishlist(accessToken, jobAnnoucemnetId);
+        List<JobAnnouncementDto> response = jobAnnouncementService.getMembersWishlist(accessToken, pageable);
 
-        return ResponseEntity.ok().body("성공");
+        return ResponseEntity.ok().body(response);
     }
 }
