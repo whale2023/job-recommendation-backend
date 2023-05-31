@@ -48,9 +48,15 @@ public class JobAnnouncementService {
         memberRepository.save(member);
     }
 
-    public List<JobAnnouncementDto> getAnnouncementPage(Pageable pageable){
+    public List<JobAnnouncementDto> getAnnouncementPage(Pageable pageable, String accessToken){
+        String email = tokenProvider.validateJwtAndGetUserEmail(accessToken);
+        MemberEntity member = memberRepository.findByEmail(email)
+                .orElseThrow(()-> new EntityNotFoundException("사용자를 찾을 수 없습니다"));
         Page<JobAnnouncement> announcementList = jobAnnouncementRepository.findAll(pageable);
-        List<JobAnnouncementDto> announcementDtos = announcementList.map(JobAnnouncementDto::new).stream().collect(Collectors.toList());
+        List<JobAnnouncementDto> announcementDtos = announcementList.map(JobAnnouncementDto::new).stream()
+                .map((JobAnnouncementDto item)-> {
+                    return item.checkAddedAnnouncement(member);
+                }).collect(Collectors.toList());
 
         return announcementDtos;
     }

@@ -18,8 +18,9 @@ public class JobAnnouncementController {
     private final JobAnnouncementService jobAnnouncementService;
 
     @GetMapping("")
-    public ResponseEntity<List<JobAnnouncementDto>> getJobAnnouncement (Pageable pageable){
-        List<JobAnnouncementDto> jobAnnouncementDtos = jobAnnouncementService.getAnnouncementPage(pageable);
+    public ResponseEntity<List<JobAnnouncementDto>> getJobAnnouncement (@RequestHeader("Authorization")String token, Pageable pageable){
+        String accessToken = token.substring(7);
+        List<JobAnnouncementDto> jobAnnouncementDtos = jobAnnouncementService.getAnnouncementPage(pageable, accessToken);
 
         return ResponseEntity.ok().body(jobAnnouncementDtos);
     }

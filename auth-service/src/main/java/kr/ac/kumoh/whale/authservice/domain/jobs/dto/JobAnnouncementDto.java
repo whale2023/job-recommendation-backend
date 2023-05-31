@@ -1,9 +1,13 @@
 package kr.ac.kumoh.whale.authservice.domain.jobs.dto;
 
 import kr.ac.kumoh.whale.authservice.domain.jobs.entity.JobAnnouncement;
+import kr.ac.kumoh.whale.authservice.domain.member.entity.MemberEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -45,8 +49,11 @@ public class JobAnnouncementDto {
     private String registrationDate;
     // 연락처
     private String contactNumber;
+
     // 위시 리스트에 등록한 사용자 수
     private Long countOfMemberWish;
+    // 멤버가 위시리스트에 추가 한 공고인지 확인하는 변수
+    private boolean addedWishlist = false;
 
     public JobAnnouncementDto(JobAnnouncement jobAnnouncement) {
         this.id = jobAnnouncement.getId();
@@ -68,5 +75,13 @@ public class JobAnnouncementDto {
         this.registrationDate = jobAnnouncement.getRegistrationDate();
         this.contactNumber = jobAnnouncement.getContactNumber();
         this.countOfMemberWish = Long.valueOf(jobAnnouncement.getMembers().size());
+    }
+
+    public JobAnnouncementDto checkAddedAnnouncement(MemberEntity member){
+        Set<JobAnnouncement> announcementList = member.getWishlist();
+        if (announcementList.stream().anyMatch(jobAnnouncement -> jobAnnouncement.getId().equals(this.id))){
+            this.addedWishlist = true;
+        }
+        return this;
     }
 }
