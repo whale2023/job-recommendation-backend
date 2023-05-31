@@ -45,6 +45,8 @@ public class JobAnnouncementDto {
     private String registrationDate;
     // 연락처
     private String contactNumber;
+    // 위시 리스트에 등록한 사용자 수
+    private Long countOfMemberWish;
 
     public JobAnnouncementDto(JobAnnouncement jobAnnouncement) {
         this.id = jobAnnouncement.getId();
@@ -65,5 +67,6 @@ public class JobAnnouncementDto {
         this.responsibleAgency = jobAnnouncement.getResponsibleAgency();
         this.registrationDate = jobAnnouncement.getRegistrationDate();
         this.contactNumber = jobAnnouncement.getContactNumber();
+        this.countOfMemberWish = Long.valueOf(jobAnnouncement.getMembers().size());
     }
 }

@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Entity
@@ -56,8 +58,9 @@ public class JobAnnouncement {
     // 연락처
     private String contactNumber;
 
+
     @ManyToMany(mappedBy = "wishlist")
-    private List<MemberEntity> members = new ArrayList<>();
+    private Set<MemberEntity> members = new HashSet<>();
 
     private JobAnnouncement(String applicationDate, String recruitmentPeriod, String companyName, String recruitmentType, String typeOfEmployment, String formOfWages, String wage, String entryForm, String requiredExperience, String requiredEducation, String majorField, String requiredCredentials, String businessAddress, String companyType, String responsibleAgency, String registrationDate, String contactNumber) {
         this.applicationDate = applicationDate;
