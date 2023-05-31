@@ -1,5 +1,8 @@
 
 spring:
+  batch:
+    jdbc:
+      initialize-schema: always
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     show-sql: true
@@ -40,9 +43,9 @@ spring:
     password:
 
 token:
-  access_expiration_time: 86400000
+  access_expiration_time: 8640000000
   #  1day
-  refresh_expiration_time: 864000000
+  refresh_expiration_time: 8640000000
   secret: user_token
 
 jasypt:
