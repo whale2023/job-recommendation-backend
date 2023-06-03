@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import kr.ac.kumoh.whale.authservice.domain.jobs.dto.JobAnnouncementDto;
 import kr.ac.kumoh.whale.authservice.global.batch.json.health_center.HealthCenterApiWriter;
 import kr.ac.kumoh.whale.authservice.global.batch.json.health_center.HealthCenterInfo;
+import kr.ac.kumoh.whale.authservice.global.batch.json.risk_assessment_certified_workplace.RiskAssessmentCertifiedWorkplace;
+import kr.ac.kumoh.whale.authservice.global.batch.json.risk_assessment_certified_workplace.RiskAssessmentCertifiedWorkplaceApiWriter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -30,7 +32,10 @@ public class FileItemReaderJobConfig {
     private final JobAnnouncementCsvWriter jobAnnouncementCsvWriter;
     
     private static final int chunkSize = 1000;
+    // 건강센터 정보
     private final HealthCenterApiWriter healthCenterApiWriter;
+    // 위험성평가 인정사업장 정보
+    private final RiskAssessmentCertifiedWorkplaceApiWriter riskAssessmentCertifiedWorkplaceApiWriter;
 
     @Bean
     public Job jobAnnouncementCsvFileItemReaderJob() {
@@ -61,6 +66,22 @@ public class FileItemReaderJobConfig {
                 .<HealthCenterInfo, HealthCenterInfo>chunk(chunkSize)
                 .reader(apiReader.apiItemReader())
                 .writer(healthCenterApiWriter)
+                .build();
+    }
+
+    @Bean
+    public Job riskAssessmentCertifiedWorkplaceApiReaderJob() throws JsonProcessingException, URISyntaxException {
+        return jobBuilderFactory.get("riskAssessmentCertifiedWorkplaceApiReaderJob")
+                .start(riskAssessmentCertifiedWorkplaceApiReaderStep())
+                .build();
+    }
+
+    @Bean
+    public Step riskAssessmentCertifiedWorkplaceApiReaderStep() throws JsonProcessingException, URISyntaxException {
+        return stepBuilderFactory.get("riskAssessmentCertifiedWorkplaceApiReaderStep")
+                .<RiskAssessmentCertifiedWorkplace, RiskAssessmentCertifiedWorkplace>chunk(chunkSize)
+                .reader(apiReader.riskAssessmentCertifiedWorkplaceItemReader())
+                .writer(riskAssessmentCertifiedWorkplaceApiWriter)
                 .build();
     }
 }
