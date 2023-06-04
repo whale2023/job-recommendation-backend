@@ -8,6 +8,8 @@ import kr.ac.kumoh.whale.authservice.global.batch.json.barrier_free_certified_wo
 import kr.ac.kumoh.whale.authservice.global.batch.json.barrier_free_certified_workplace.BarrierFreeCertifiedWorkplaceApiWriter;
 import kr.ac.kumoh.whale.authservice.global.batch.json.health_center.HealthCenterApiWriter;
 import kr.ac.kumoh.whale.authservice.global.batch.json.health_center.HealthCenterInfo;
+import kr.ac.kumoh.whale.authservice.global.batch.json.high_percent_accident_workplace.HighPercentAccidentWorkplace;
+import kr.ac.kumoh.whale.authservice.global.batch.json.high_percent_accident_workplace.HighPercentAccidentWorkplaceApiWriter;
 import kr.ac.kumoh.whale.authservice.global.batch.json.risk_assessment_certified_workplace.RiskAssessmentCertifiedWorkplace;
 import kr.ac.kumoh.whale.authservice.global.batch.json.risk_assessment_certified_workplace.RiskAssessmentCertifiedWorkplaceApiWriter;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +48,9 @@ public class FileItemReaderJobConfig {
 
     // 산업재해 중대산업사고 발생 사업장
     private final AccidentWorkplaceApiWriter accidentWorkplaceApiWriter;
+
+    //
+    private final HighPercentAccidentWorkplaceApiWriter highPercentAccidentWorkplaceApiWriter;
 
     @Bean
     public Job jobAnnouncementCsvFileItemReaderJob() {
@@ -124,6 +129,22 @@ public class FileItemReaderJobConfig {
                 .<AccidentWorkplace, AccidentWorkplace>chunk(chunkSize)
                 .reader(apiReader.accidentWorkplaceItemReader())
                 .writer(accidentWorkplaceApiWriter)
+                .build();
+    }
+
+    @Bean
+    public Job highPercentAccidentWorkplaceApiReaderJob() throws JsonProcessingException, URISyntaxException {
+        return jobBuilderFactory.get("highPercentAccidentWorkplaceApiReaderJob")
+                .start(highPercentAccidentWorkplaceApiReaderStep())
+                .build();
+    }
+
+    @Bean
+    public Step highPercentAccidentWorkplaceApiReaderStep() throws JsonProcessingException, URISyntaxException {
+        return stepBuilderFactory.get("highPercentAccidentWorkplaceApiReaderStep")
+                .<HighPercentAccidentWorkplace, HighPercentAccidentWorkplace>chunk(chunkSize)
+                .reader(apiReader.highPercentAccidentWorkplaceItemReader())
+                .writer(highPercentAccidentWorkplaceApiWriter)
                 .build();
     }
 }

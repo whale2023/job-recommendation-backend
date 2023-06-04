@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.ac.kumoh.whale.authservice.global.batch.json.accident_workplace.AccidentWorkplace;
 import kr.ac.kumoh.whale.authservice.global.batch.json.barrier_free_certified_workplace.BarrierFreeCertifiedWorkplace;
 import kr.ac.kumoh.whale.authservice.global.batch.json.health_center.HealthCenterInfo;
+import kr.ac.kumoh.whale.authservice.global.batch.json.high_percent_accident_workplace.HighPercentAccidentWorkplace;
 import kr.ac.kumoh.whale.authservice.global.batch.json.risk_assessment_certified_workplace.RiskAssessmentCertifiedWorkplace;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +32,52 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ApiReader {
     private String serviceKey = "vdGJEuz%2B3h6ABcRGeQGy8ZFlf9w4QYyvY4pCW3PD4YrofQFod1ylz6kX870R98FprfaItjyPu1Y1V%2BCNjGkn6Q%3D%3D";
+
+    @Bean
+    public ItemReader<HighPercentAccidentWorkplace> highPercentAccidentWorkplaceItemReader() throws URISyntaxException, JsonProcessingException {
+        List<HighPercentAccidentWorkplace> highPercentAccidentWorkplaces = getFileItemReaderFromAccidentPercentApi(HighPercentAccidentWorkplace.class);
+        return new IteratorItemReader<>(highPercentAccidentWorkplaces);
+    }
+
+    private List<HighPercentAccidentWorkplace> getFileItemReaderFromAccidentPercentApi(Class<HighPercentAccidentWorkplace> highPercentAccidentWorkplaceClass) throws URISyntaxException, JsonProcessingException {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Accept", "application/json");
+
+        int currentPage = 0;
+        int currentCount = 1000;
+        int totalCount = 1001;
+
+        List<HighPercentAccidentWorkplace> result = new ArrayList<>();
+
+        while (currentCount!=0){
+            currentPage++;
+            log.info("high percent accident workplace info totalCount : {}, currentPage : {}, currentCount : {}",totalCount, currentPage, currentCount);
+            String uri = "https://api.odcloud.kr/api/15090150/v1/uddi:7e3cb707-1ab0-42b2-94d0-a72a26d998e5?"
+                    + "page=" + currentPage + "&perPage=" + 1000 + "&serviceKey=" + serviceKey;
+            URI uri1 = new URI(uri);
+
+            //log.info("Fetching data from an external API by using the url: {}", uri);
+
+            ResponseEntity<String> response = restTemplate.exchange(uri1, HttpMethod.GET,
+                    new HttpEntity<>(headers), String.class);
+
+            // Json parsing
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, Object> responseObject = objectMapper.readValue(response.getBody(),
+                    new TypeReference<Map<String, Object>>() {});
+
+            ArrayList<Map<String,?>> dataProperty = (ArrayList<Map<String, ?>>) responseObject.get("data");
+            List<HighPercentAccidentWorkplace> accidentWorkplaces = dataProperty.stream().map((Map<String, ?> t) -> new HighPercentAccidentWorkplace(t)).collect(Collectors.toList());
+
+            currentCount = Integer.parseInt(responseObject.get("currentCount").toString());
+            currentPage = Integer.parseInt(responseObject.get("page").toString());
+            totalCount = Integer.parseInt(responseObject.get("totalCount").toString());
+            result.addAll(accidentWorkplaces);
+        }
+
+        return result;
+    }
 
     @Bean
     public ItemReader<AccidentWorkplace> accidentWorkplaceItemReader() throws URISyntaxException, JsonProcessingException {
@@ -97,7 +144,7 @@ public class ApiReader {
 
         while (currentCount!=0){
             currentPage++;
-            log.info("totalCount : {}, currentPage : {}, currentCount : {}",totalCount, currentPage, currentCount);
+            log.info("barrier free totalCount : {}, currentPage : {}, currentCount : {}",totalCount, currentPage, currentCount);
             String uri = "https://api.odcloud.kr/api/15014781/v1/uddi:5d17399e-1bb1-4edd-8fea-bc0b1f0f990a?"
                     + "page=" + currentPage + "&perPage=" + 1000 + "&serviceKey=" + serviceKey;
             URI uri1 = new URI(uri);
@@ -143,7 +190,7 @@ public class ApiReader {
 
         while (currentCount!=0){
             currentPage++;
-            log.info("totalCount : {}, currentPage : {}, currentCount : {}",totalCount, currentPage, currentCount);
+            log.info("risk assessment certified totalCount : {}, currentPage : {}, currentCount : {}",totalCount, currentPage, currentCount);
             String uri = "https://api.odcloud.kr/api/15002452/v1/uddi:4bc92095-bfa2-464f-8723-b65c6a336565?"
                     + "page=" + currentPage + "&perPage=" + 1000 + "&serviceKey=" + serviceKey;
             URI uri1 = new URI(uri);
