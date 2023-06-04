@@ -6,6 +6,8 @@ import kr.ac.kumoh.whale.authservice.global.batch.json.accident_workplace.Accide
 import kr.ac.kumoh.whale.authservice.global.batch.json.accident_workplace.AccidentWorkplaceApiWriter;
 import kr.ac.kumoh.whale.authservice.global.batch.json.barrier_free_certified_workplace.BarrierFreeCertifiedWorkplace;
 import kr.ac.kumoh.whale.authservice.global.batch.json.barrier_free_certified_workplace.BarrierFreeCertifiedWorkplaceApiWriter;
+import kr.ac.kumoh.whale.authservice.global.batch.json.employment_information.EmploymentInformation;
+import kr.ac.kumoh.whale.authservice.global.batch.json.employment_information.EmploymentInformationApiWriter;
 import kr.ac.kumoh.whale.authservice.global.batch.json.health_center.HealthCenterApiWriter;
 import kr.ac.kumoh.whale.authservice.global.batch.json.health_center.HealthCenterInfo;
 import kr.ac.kumoh.whale.authservice.global.batch.json.high_percent_accident_workplace.HighPercentAccidentWorkplace;
@@ -49,8 +51,11 @@ public class FileItemReaderJobConfig {
     // 산업재해 중대산업사고 발생 사업장
     private final AccidentWorkplaceApiWriter accidentWorkplaceApiWriter;
 
-    //
+    // 중대재해 발생이 규모별 동종업종 평균재해율 이상인 사업장
     private final HighPercentAccidentWorkplaceApiWriter highPercentAccidentWorkplaceApiWriter;
+
+    // 장애인 고용정보
+    private final EmploymentInformationApiWriter employmentInformationApiWriter;
 
     @Bean
     public Job jobAnnouncementCsvFileItemReaderJob() {
@@ -145,6 +150,22 @@ public class FileItemReaderJobConfig {
                 .<HighPercentAccidentWorkplace, HighPercentAccidentWorkplace>chunk(chunkSize)
                 .reader(apiReader.highPercentAccidentWorkplaceItemReader())
                 .writer(highPercentAccidentWorkplaceApiWriter)
+                .build();
+    }
+
+    @Bean
+    public Job employmentInformationApiReaderJob() throws JsonProcessingException, URISyntaxException {
+        return jobBuilderFactory.get("employmentInformationApiReaderJob")
+                .start(employmentInformationApiReaderStep())
+                .build();
+    }
+
+    @Bean
+    public Step employmentInformationApiReaderStep() throws JsonProcessingException, URISyntaxException {
+        return stepBuilderFactory.get("employmentInformationApiReaderStep")
+                .<EmploymentInformation, EmploymentInformation>chunk(chunkSize)
+                .reader(apiReader.employmentInformationItemReader())
+                .writer(employmentInformationApiWriter)
                 .build();
     }
 }
