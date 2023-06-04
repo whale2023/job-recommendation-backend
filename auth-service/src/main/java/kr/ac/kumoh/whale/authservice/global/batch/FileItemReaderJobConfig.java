@@ -2,6 +2,8 @@ package kr.ac.kumoh.whale.authservice.global.batch;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import kr.ac.kumoh.whale.authservice.domain.jobs.dto.JobAnnouncementDto;
+import kr.ac.kumoh.whale.authservice.global.batch.json.barrier_free_certified_workplace.BarrierFreeCertifiedWorkplace;
+import kr.ac.kumoh.whale.authservice.global.batch.json.barrier_free_certified_workplace.BarrierFreeCertifiedWorkplaceApiWriter;
 import kr.ac.kumoh.whale.authservice.global.batch.json.health_center.HealthCenterApiWriter;
 import kr.ac.kumoh.whale.authservice.global.batch.json.health_center.HealthCenterInfo;
 import kr.ac.kumoh.whale.authservice.global.batch.json.risk_assessment_certified_workplace.RiskAssessmentCertifiedWorkplace;
@@ -36,6 +38,9 @@ public class FileItemReaderJobConfig {
     private final HealthCenterApiWriter healthCenterApiWriter;
     // 위험성평가 인정사업장 정보
     private final RiskAssessmentCertifiedWorkplaceApiWriter riskAssessmentCertifiedWorkplaceApiWriter;
+
+    // 배리어프리 인증사업장 정보
+    private final BarrierFreeCertifiedWorkplaceApiWriter barrierFreeCertifiedWorkplaceApiWriter;
 
     @Bean
     public Job jobAnnouncementCsvFileItemReaderJob() {
@@ -82,6 +87,22 @@ public class FileItemReaderJobConfig {
                 .<RiskAssessmentCertifiedWorkplace, RiskAssessmentCertifiedWorkplace>chunk(chunkSize)
                 .reader(apiReader.riskAssessmentCertifiedWorkplaceItemReader())
                 .writer(riskAssessmentCertifiedWorkplaceApiWriter)
+                .build();
+    }
+
+    @Bean
+    public Job barrierFreeCertifiedWorkplaceApiReaderJob() throws JsonProcessingException, URISyntaxException {
+        return jobBuilderFactory.get("barrierFreeCertifiedWorkplaceApiReaderJob")
+                .start(barrierFreeCertifiedWorkplaceApiReaderStep())
+                .build();
+    }
+
+    @Bean
+    public Step barrierFreeCertifiedWorkplaceApiReaderStep() throws JsonProcessingException, URISyntaxException {
+        return stepBuilderFactory.get("barrierFreeCertifiedWorkplaceApiReaderStep")
+                .<BarrierFreeCertifiedWorkplace, BarrierFreeCertifiedWorkplace>chunk(chunkSize)
+                .reader(apiReader.barrierFreeCertifiedWorkplaceItemReader())
+                .writer(barrierFreeCertifiedWorkplaceApiWriter)
                 .build();
     }
 }
