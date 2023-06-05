@@ -64,7 +64,7 @@ public class JobAnnouncement {
 
     private JobAnnouncement(String applicationDate, String recruitmentPeriod, String companyName, String recruitmentType, String typeOfEmployment, String formOfWages, String wage, String entryForm, String requiredExperience, String requiredEducation, String majorField, String requiredCredentials, String businessAddress, String companyType, String responsibleAgency, String registrationDate, String contactNumber) {
         this.applicationDate = applicationDate;
-        this.recruitmentPeriod = recruitmentPeriod;
+        this.recruitmentPeriod = recruitmentPeriod.substring(11);
         this.companyName = companyName;
         this.recruitmentType = recruitmentType;
         this.typeOfEmployment = typeOfEmployment;
