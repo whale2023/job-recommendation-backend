@@ -98,9 +98,9 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         body.put("role",userDetails.getDisabilityType().toString());
         body.put("expirationTime", env.getProperty("token.access_expiration_time"));
 
-//        redis에 refresh token 저장
-        ValueOperations<String, Object> vop = redisTemplate.opsForValue();
-        vop.set(userEmail,refreshToken);
+////        redis에 refresh token 저장
+//        ValueOperations<String, Object> vop = redisTemplate.opsForValue();
+//        vop.set(userEmail,refreshToken);
 
         new ObjectMapper().writeValue(response.getOutputStream(),body);
     }
