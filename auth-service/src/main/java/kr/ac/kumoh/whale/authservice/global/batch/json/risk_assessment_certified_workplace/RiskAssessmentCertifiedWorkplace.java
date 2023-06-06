@@ -15,6 +15,7 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RiskAssessmentCertifiedWorkplace {
+    // 위험성 평가 인정사업장 정보
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

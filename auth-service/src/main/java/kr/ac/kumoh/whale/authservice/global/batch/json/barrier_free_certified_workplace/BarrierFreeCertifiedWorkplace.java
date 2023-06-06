@@ -15,6 +15,7 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BarrierFreeCertifiedWorkplace {
+    // 배리어프리 인증 시설
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,7 +32,7 @@ public class BarrierFreeCertifiedWorkplace {
     private String certificationCancellationStatus; // 인증만료(취소)여부
 
     public BarrierFreeCertifiedWorkplace(Map<String, String> t) {
-        this.facilityName = t.get("시설뮬명");
+        this.facilityName = t.get("시설물명");
         this.target = t.get("인증대상");
         this.certificationType = t.get("인증구분");
         this.grade = t.get("등급");

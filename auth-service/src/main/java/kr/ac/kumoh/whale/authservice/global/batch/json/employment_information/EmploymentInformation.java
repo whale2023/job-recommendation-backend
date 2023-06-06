@@ -16,6 +16,7 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EmploymentInformation {
+    // 장애인 고용정보
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
