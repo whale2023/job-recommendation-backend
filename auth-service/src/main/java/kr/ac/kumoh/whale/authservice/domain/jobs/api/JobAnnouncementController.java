@@ -17,8 +17,16 @@ import java.util.List;
 public class JobAnnouncementController {
     private final JobAnnouncementService jobAnnouncementService;
 
-    @GetMapping("")
+    @GetMapping("/sort/wish")
     public ResponseEntity<List<JobAnnouncementDto>> getJobAnnouncement (@RequestHeader("Authorization")String token, Pageable pageable){
+        String accessToken = token.substring(7);
+        List<JobAnnouncementDto> jobAnnouncementDtos = jobAnnouncementService.getAnnoucementsSortbyAddedWishMembers(accessToken, pageable);
+
+        return ResponseEntity.ok().body(jobAnnouncementDtos);
+    }
+
+    @GetMapping("")
+    public ResponseEntity<List<JobAnnouncementDto>> getJobAnnouncementSortbyAddedWishMembers (@RequestHeader("Authorization")String token, Pageable pageable){
         String accessToken = token.substring(7);
         List<JobAnnouncementDto> jobAnnouncementDtos = jobAnnouncementService.getAnnouncementPage(pageable, accessToken);
 
