@@ -15,6 +15,7 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class HighPercentAccidentWorkplace {
+    // 중대재해 발생이 규모별 동종업종 평균재해율 이상인 사업장
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

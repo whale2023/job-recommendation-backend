@@ -15,6 +15,7 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AccidentWorkplace {
+    // 산업재해 중대산업사고 발생사업장
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

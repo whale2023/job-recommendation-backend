@@ -16,6 +16,7 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class HealthCenterInfo {
+    // 근로자 건강센터 현황정보
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
