@@ -20,6 +20,8 @@ public class ResumeDto {
     private List<CareerDto> careerList;
     // 자격증
     private List<Certification> certifications;
+    // 선호 키워드
+    private String preferKeyword;
 
     public ResumeDto(ResumeEntity entity) {
         this.major = entity.getMajor();
@@ -28,5 +30,6 @@ public class ResumeDto {
         this.workType = entity.getWorkType();
         this.careerList = entity.getCareerList().stream().map(CareerDto::new).collect(Collectors.toList());
         this.certifications = entity.getCertifications();
+        this.preferKeyword = entity.getPreferKeyword();
     }
 }

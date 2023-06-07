@@ -14,7 +14,8 @@ public class ResumeRequest {
     private long preferIncome;
     private WorkType workType;
     private List<Certification> certifications;
-    private List<CareerDto> careers;
+    private List<CareerRequestDto> careers;
+    private String preferKeyword;
 }
 
 

@@ -4,9 +4,11 @@ package kr.ac.kumoh.whale.authservice.domain.resume.service;
 import kr.ac.kumoh.whale.authservice.domain.member.entity.MemberEntity;
 import kr.ac.kumoh.whale.authservice.domain.member.repository.MemberRepository;
 import kr.ac.kumoh.whale.authservice.domain.resume.dto.CareerDto;
+import kr.ac.kumoh.whale.authservice.domain.resume.dto.CareerRequestDto;
 import kr.ac.kumoh.whale.authservice.domain.resume.dto.ResumeDto;
 import kr.ac.kumoh.whale.authservice.domain.resume.dto.ResumeRequest;
 import kr.ac.kumoh.whale.authservice.domain.resume.entity.Career;
+import kr.ac.kumoh.whale.authservice.domain.resume.entity.JobCategory;
 import kr.ac.kumoh.whale.authservice.domain.resume.entity.ResumeEntity;
 import kr.ac.kumoh.whale.authservice.domain.resume.repository.ResumeRepository;
 import kr.ac.kumoh.whale.authservice.global.error.exception.EntityNotFoundException;
@@ -45,14 +47,15 @@ public class ResumeService {
                 .major(resumeRequest.getMajor())
                 .careerList(new ArrayList<>())
                 .certifications(resumeRequest.getCertifications())
+                .preferKeyword(resumeRequest.getPreferKeyword())
                 .build();
 
         // 경력 생성 및 추가
         List<Career> careers = new ArrayList<>();
-        for (CareerDto careerRequest : resumeRequest.getCareers()) {
+        for (CareerRequestDto careerRequest : resumeRequest.getCareers()) {
             Career career = Career.builder()
                     .period(careerRequest.getPeriod())
-                    .category(careerRequest.getCategory())
+                    .category(JobCategory.findByDisplayName(careerRequest.getCategory()))
                     .build();
             career.setResume(resume);
             careers.add(career);

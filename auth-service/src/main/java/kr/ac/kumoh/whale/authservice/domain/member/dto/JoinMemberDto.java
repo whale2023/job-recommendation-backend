@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberDto {
+public class JoinMemberDto {
     private String username;
     private int age;
     private String email;
@@ -20,13 +20,14 @@ public class MemberDto {
     private String addressDetails;
     private String disabilityType;
 
-    public MemberDto(MemberEntity memberEntity) {
+    public JoinMemberDto(MemberEntity memberEntity) {
         this.username = memberEntity.getUsername();
         this.email = memberEntity.getEmail();
         this.age = memberEntity.getAge();
         this.encryptedPwd = memberEntity.getEncryptedPwd();
         this.addressInfo = memberEntity.getAddressInfo();
         this.addressDetails = memberEntity.getAddressDetails();
-        this.disabilityType = memberEntity.getDisabilityType().getValue();
+        this.disabilityType = String.valueOf(memberEntity.getDisabilityType());
     }
 }
+

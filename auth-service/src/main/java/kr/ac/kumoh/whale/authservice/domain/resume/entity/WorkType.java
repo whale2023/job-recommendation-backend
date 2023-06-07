@@ -1,9 +1,9 @@
 package kr.ac.kumoh.whale.authservice.domain.resume.entity;
 
 public enum WorkType {
-    FULL_TIME("Full-time"),
-    PART_TIME("Part-time"),
-    REMOTE("Remote");
+    상용직("상용직"),
+    시간제("시간제"),
+    계약직("계약직");
 
     private final String displayName;
 

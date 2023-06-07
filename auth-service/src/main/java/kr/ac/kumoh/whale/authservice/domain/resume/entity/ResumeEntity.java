@@ -26,20 +26,25 @@ public class ResumeEntity {
     // 전공
     private String major;
     // 최종 학력
+    @Enumerated(value = EnumType.STRING)
     private Education education;
     // 선호 연봉
     private long preferIncome;
     // 선호 근무 형태
+    @Enumerated(value = EnumType.STRING)
     private WorkType workType;
     // 경력
     @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Career> careerList;
     // 자격증
     @ElementCollection
+    @Enumerated(value = EnumType.STRING)
     private List<Certification> certifications;
+    // 선호 키워드
+    private String preferKeyword;
 
     @Builder
-    public ResumeEntity(MemberEntity member, String major, Education education, long preferIncome, WorkType workType, List<Career> careerList, List<Certification> certifications) {
+    public ResumeEntity(MemberEntity member, String major, Education education, long preferIncome, WorkType workType, List<Career> careerList, List<Certification> certifications, String preferKeyword) {
         this.member = member;
         this.major = major;
         this.education = education;
@@ -47,6 +52,7 @@ public class ResumeEntity {
         this.workType = workType;
         this.careerList = careerList;
         this.certifications = certifications;
+        this.preferKeyword = preferKeyword;
     }
 
     public void addCareer(Career career){

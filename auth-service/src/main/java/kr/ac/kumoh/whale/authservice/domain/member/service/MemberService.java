@@ -1,7 +1,9 @@
 package kr.ac.kumoh.whale.authservice.domain.member.service;
 
+import kr.ac.kumoh.whale.authservice.domain.member.dto.JoinMemberDto;
 import kr.ac.kumoh.whale.authservice.domain.member.dto.MemberDto;
 import kr.ac.kumoh.whale.authservice.domain.member.dto.response.MemberInfoDto;
+import kr.ac.kumoh.whale.authservice.domain.member.entity.Disability;
 import kr.ac.kumoh.whale.authservice.domain.member.entity.MemberEntity;
 import kr.ac.kumoh.whale.authservice.domain.member.repository.MemberRepository;
 import kr.ac.kumoh.whale.authservice.global.error.exception.EntityNotFoundException;
@@ -49,7 +51,7 @@ public class MemberService implements UserDetailsService {
     }
 
     @Transactional
-    public MemberDto createUser(MemberDto memberDto) {
+    public MemberDto createUser(JoinMemberDto memberDto) {
         if (memberRepository.existsByEmail(memberDto.getEmail())) {
             log.info("이미 가입된 유저");
             throw new InvalidValueException("이미 가입한 유저입니다.");
@@ -62,7 +64,7 @@ public class MemberService implements UserDetailsService {
                 .encryptedPwd(passwordEncoder.encode(memberDto.getEncryptedPwd()))
                 .addressInfo(memberDto.getAddressInfo())
                 .addressDetails(memberDto.getAddressDetails())
-                .disabilityType(memberDto.getDisabilityType())
+                .disabilityType(Disability.findByDisplayName(memberDto.getDisabilityType()))
                 .build();
 
         MemberEntity registeredMember = memberRepository.save(member);

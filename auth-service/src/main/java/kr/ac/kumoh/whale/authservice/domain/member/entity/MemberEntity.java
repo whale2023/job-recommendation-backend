@@ -44,6 +44,7 @@ public class MemberEntity {
 
     @NonNull
     @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
     private Disability disabilityType;
 
     @OneToOne(mappedBy = "member")
