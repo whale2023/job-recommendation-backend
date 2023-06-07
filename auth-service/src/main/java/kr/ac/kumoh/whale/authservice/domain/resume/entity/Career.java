@@ -18,6 +18,7 @@ public class Career {
     @Column(name = "career_id")
     private Long id;
     private int period;
+    @Enumerated(value = EnumType.STRING)
     private JobCategory category;
 
     @ManyToOne

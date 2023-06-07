@@ -1,10 +1,10 @@
 package kr.ac.kumoh.whale.authservice.domain.resume.entity;
 
 public enum Education {
-    HIGH_SCHOOL("High School"),
-    BACHELOR("Bachelor's Degree"),
-    MASTER("Master's Degree"),
-    DOCTORATE("Doctorate Degree");
+    중졸("중졸"),
+    고졸("고졸"),
+    초대졸("초대졸"),
+    대졸("대졸");
 
     private final String displayName;
 

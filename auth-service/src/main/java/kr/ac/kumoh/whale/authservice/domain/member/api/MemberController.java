@@ -1,5 +1,6 @@
 package kr.ac.kumoh.whale.authservice.domain.member.api;
 
+import kr.ac.kumoh.whale.authservice.domain.member.dto.JoinMemberDto;
 import kr.ac.kumoh.whale.authservice.domain.member.dto.MemberDto;
 import kr.ac.kumoh.whale.authservice.domain.member.dto.response.MemberInfoDto;
 import kr.ac.kumoh.whale.authservice.domain.member.service.MemberService;
@@ -16,7 +17,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("")
-    public ResponseEntity<MemberDto> registerMember(@RequestBody MemberDto memberDto) {
+    public ResponseEntity<MemberDto> registerMember(@RequestBody JoinMemberDto memberDto) {
         MemberDto registeredMember = memberService.createUser(memberDto);
 
         return ResponseEntity.ok().body(registeredMember);
