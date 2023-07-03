@@ -28,7 +28,7 @@ public class JobAnnouncementDto {
     // 임금형태
     private String formOfWages;
     // 임금
-    private String wage;
+    private int wage;
     // 입사형태
     private String entryForm;
     // 요구경력

@@ -7,10 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Entity
@@ -36,7 +33,7 @@ public class JobAnnouncement {
     // 임금형태
     private String formOfWages;
     // 임금
-    private String wage;
+    private int wage;
     // 입사형태
     private String entryForm;
     // 요구경력
@@ -62,27 +59,25 @@ public class JobAnnouncement {
     @ManyToMany(mappedBy = "wishlist")
     private Set<MemberEntity> members = new HashSet<>();
 
-    private JobAnnouncement(String applicationDate, String recruitmentPeriod, String companyName, String recruitmentType, String typeOfEmployment, String formOfWages, String wage, String entryForm, String requiredExperience, String requiredEducation, String majorField, String requiredCredentials, String businessAddress, String companyType, String responsibleAgency, String registrationDate, String contactNumber) {
-        this.applicationDate = applicationDate;
-        this.recruitmentPeriod = recruitmentPeriod.substring(11);
-        this.companyName = companyName;
-        this.recruitmentType = recruitmentType;
-        this.typeOfEmployment = typeOfEmployment;
-        this.formOfWages = formOfWages;
-        this.wage = wage;
-        this.entryForm = entryForm;
-        this.requiredExperience = requiredExperience;
-        this.requiredEducation = requiredEducation;
-        this.majorField = majorField;
-        this.requiredCredentials = requiredCredentials;
-        this.businessAddress = businessAddress;
-        this.companyType = companyType;
-        this.responsibleAgency = responsibleAgency;
-        this.registrationDate = registrationDate;
-        this.contactNumber = contactNumber;
+    public JobAnnouncement(Map<String,?> map) {
+        this.applicationDate = (String) map.get("구인신청일자");
+        String allRecruitmentPeriod = (String) map.get("모집기간");
+        this.recruitmentPeriod = allRecruitmentPeriod.substring(11);
+        this.companyName = (String) map.get("사업장명");
+        this.recruitmentType = (String) map.get("모집직종");
+        this.typeOfEmployment = (String) map.get("고용형태");
+        this.formOfWages = (String) map.get("임금형태");
+        this.wage = (int) map.get("임금");
+        this.entryForm = (String) map.get("입사형태");
+        this.requiredExperience = (String) map.get("요구경력");
+        this.requiredEducation = (String) map.get("요구학력");
+        this.majorField = (String) map.get("전공계열");
+        this.requiredCredentials = (String) map.get("요구자격증");
+        this.businessAddress = (String) map.get("사업장 주소");
+        this.companyType = (String) map.get("기업형태");
+        this.responsibleAgency = (String) map.get("담당기관");
+        this.registrationDate = (String) map.get("등록일");
+        this.contactNumber = (String) map.get("연락처");
     }
 
-    public static JobAnnouncement createJobAnnouncement(JobAnnouncementDto dto){
-        return new JobAnnouncement(dto.getApplicationDate(),dto.getRecruitmentPeriod(),dto.getCompanyName(),dto.getRecruitmentType(),dto.getTypeOfEmployment(),dto.getFormOfWages(),dto.getWage(),dto.getEntryForm(),dto.getRequiredExperience(),dto.getRequiredEducation(),dto.getMajorField(),dto.getRequiredCredentials(),dto.getBusinessAddress(),dto.getCompanyType(),dto.getResponsibleAgency(),dto.getRegistrationDate(),dto.getContactNumber());
-    }
 }

@@ -2,6 +2,7 @@ package kr.ac.kumoh.whale.authservice.global.batch;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import kr.ac.kumoh.whale.authservice.domain.jobs.dto.JobAnnouncementDto;
+import kr.ac.kumoh.whale.authservice.domain.jobs.entity.JobAnnouncement;
 import kr.ac.kumoh.whale.authservice.global.batch.json.accident_workplace.AccidentWorkplace;
 import kr.ac.kumoh.whale.authservice.global.batch.json.accident_workplace.AccidentWorkplaceApiWriter;
 import kr.ac.kumoh.whale.authservice.global.batch.json.barrier_free_certified_workplace.BarrierFreeCertifiedWorkplace;
@@ -12,6 +13,7 @@ import kr.ac.kumoh.whale.authservice.global.batch.json.health_center.HealthCente
 import kr.ac.kumoh.whale.authservice.global.batch.json.health_center.HealthCenterInfo;
 import kr.ac.kumoh.whale.authservice.global.batch.json.high_percent_accident_workplace.HighPercentAccidentWorkplace;
 import kr.ac.kumoh.whale.authservice.global.batch.json.high_percent_accident_workplace.HighPercentAccidentWorkplaceApiWriter;
+import kr.ac.kumoh.whale.authservice.global.batch.json.job_annoucement.JobAnnouncementApiWriter;
 import kr.ac.kumoh.whale.authservice.global.batch.json.risk_assessment_certified_workplace.RiskAssessmentCertifiedWorkplace;
 import kr.ac.kumoh.whale.authservice.global.batch.json.risk_assessment_certified_workplace.RiskAssessmentCertifiedWorkplaceApiWriter;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +22,8 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.item.ItemWriter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.client.RestTemplate;
 
 import java.net.URISyntaxException;
 
@@ -37,7 +37,7 @@ public class FileItemReaderJobConfig {
     private final ApiReader apiReader;
 
     // 발전소 정보
-    private final JobAnnouncementCsvWriter jobAnnouncementCsvWriter;
+    private final JobAnnouncementApiWriter jobAnnouncementApiWriter;
     
     private static final int chunkSize = 1000;
     // 건강센터 정보
@@ -58,18 +58,18 @@ public class FileItemReaderJobConfig {
     private final EmploymentInformationApiWriter employmentInformationApiWriter;
 
     @Bean
-    public Job jobAnnouncementCsvFileItemReaderJob() {
-        return jobBuilderFactory.get("jobAnnouncementCsvFileItemReaderJob")
-                .start(jobAnnouncementCsvFileItemReaderStep())
+    public Job jobAnnouncementApiFileItemReaderJob() throws URISyntaxException, JsonProcessingException {
+        return jobBuilderFactory.get("jobAnnouncementApiReaderJob")
+                .start(jobAnnouncementApiFileItemReaderStep())
                 .build();
     }
 
     @Bean
-    public Step jobAnnouncementCsvFileItemReaderStep() {
-        return stepBuilderFactory.get("jobAnnouncementCsvFileItemReaderStep")
-                .<JobAnnouncementDto, JobAnnouncementDto>chunk(chunkSize)
-                .reader(csvReader.csvFileItemReader())
-                .writer(jobAnnouncementCsvWriter)
+    public Step jobAnnouncementApiFileItemReaderStep() throws URISyntaxException, JsonProcessingException {
+        return stepBuilderFactory.get("jobAnnouncementApiReaderStep")
+                .<JobAnnouncement, JobAnnouncement>chunk(chunkSize)
+                .reader(apiReader.jobAnnouncementItemReader())
+                .writer(jobAnnouncementApiWriter)
                 .build();
     }
 

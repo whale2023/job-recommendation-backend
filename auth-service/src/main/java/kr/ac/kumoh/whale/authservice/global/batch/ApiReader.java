@@ -3,6 +3,7 @@ package kr.ac.kumoh.whale.authservice.global.batch;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kr.ac.kumoh.whale.authservice.domain.jobs.entity.JobAnnouncement;
 import kr.ac.kumoh.whale.authservice.global.batch.json.accident_workplace.AccidentWorkplace;
 import kr.ac.kumoh.whale.authservice.global.batch.json.barrier_free_certified_workplace.BarrierFreeCertifiedWorkplace;
 import kr.ac.kumoh.whale.authservice.global.batch.json.employment_information.EmploymentInformation;
@@ -33,6 +34,52 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ApiReader {
     private String serviceKey = "vdGJEuz%2B3h6ABcRGeQGy8ZFlf9w4QYyvY4pCW3PD4YrofQFod1ylz6kX870R98FprfaItjyPu1Y1V%2BCNjGkn6Q%3D%3D";
+
+    @Bean
+    public ItemReader<JobAnnouncement> jobAnnouncementItemReader() throws URISyntaxException, JsonProcessingException {
+        List<JobAnnouncement> jobAnnouncements = getFileItemReaderFromJobAnnouncementApi(JobAnnouncement.class);
+        return new IteratorItemReader<>(jobAnnouncements);
+    }
+
+    private List<JobAnnouncement> getFileItemReaderFromJobAnnouncementApi(Class<JobAnnouncement> jobAnnouncementClass) throws URISyntaxException, JsonProcessingException {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Accept", "application/json");
+
+        int currentPage = 0;
+        int currentCount = 1000;
+        int totalCount = 1001;
+
+        List<JobAnnouncement> result = new ArrayList<>();
+
+        while (currentCount!=0){
+            currentPage++;
+            log.info("job announcement info totalCount : {}, currentPage : {}, currentCount : {}",totalCount, currentPage, currentCount);
+            String uri = "https://api.odcloud.kr/api/3072637/v1/uddi:0b4f66ca-3427-466c-8488-b9a302cfa0d8?"
+                    + "page=" + currentPage + "&perPage=" + 1000 + "&serviceKey=" + serviceKey;
+            URI uri1 = new URI(uri);
+
+            //log.info("Fetching data from an external API by using the url: {}", uri);
+
+            ResponseEntity<String> response = restTemplate.exchange(uri1, HttpMethod.GET,
+                    new HttpEntity<>(headers), String.class);
+
+            // Json parsing
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, Object> responseObject = objectMapper.readValue(response.getBody(),
+                    new TypeReference<Map<String, Object>>() {});
+
+            ArrayList<Map<String,?>> dataProperty = (ArrayList<Map<String, ?>>) responseObject.get("data");
+            List<JobAnnouncement> accidentWorkplaces = dataProperty.stream().map((Map<String, ?> t) -> new JobAnnouncement(t)).collect(Collectors.toList());
+
+            currentCount = Integer.parseInt(responseObject.get("currentCount").toString());
+            currentPage = Integer.parseInt(responseObject.get("page").toString());
+            totalCount = Integer.parseInt(responseObject.get("totalCount").toString());
+            result.addAll(accidentWorkplaces);
+        }
+
+        return result;
+    }
 
     @Bean
     public ItemReader<EmploymentInformation> employmentInformationItemReader() throws URISyntaxException, JsonProcessingException {
